@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class MainLambdaExpression {
 
@@ -31,28 +32,80 @@ public class MainLambdaExpression {
 				gabi, madalin, alex, minor });
 
 		System.out.println(persons.size());
-		System.out.println(getAdults(persons).size());
+//		System.out.println(getAdults(persons).size());
+//
+//		System.out.println(getAdultsWithAnonymousClass(persons).size());
+//
+//		CheckPerson checkInRange = person -> person.getAge() >= 18 && person.getAge() < 30;
+//		System.out.println(getPersonsWithCondition(persons, person -> person.getAge() >= 18).size());
+//		System.out.println(getPersonsWithCondition(persons, checkInRange).size());
 
-		System.out.println(getAdultsWithAnonymousClass(persons).size());
+//		Supplier<List<Person>> supplier = () -> Arrays.asList(gabor, cipri, paul, cristi, cipriR, flaviu, sebastian, sebi,
+//				gabi, madalin, alex, minor);
+//		
+////		Predicate<Person> predicate = person -> person.getAge() >= 18 && person.getAge() < 30;
+//		Predicate<Person> predicateName = person -> person.getName().startsWith("G");
+//		Consumer<Person> consumerName = person -> person.printPerson();
+//		
+//		Predicate<Person> predicateMinor = person -> person.getAge() < 18;
+		
+		
+		
+		makeOperationOnSource(
+				() -> Arrays.asList(gabor, cipri, paul, cristi, cipriR, flaviu, sebastian, sebi,
+						gabi, madalin, alex, minor),
+				person -> person.getAge() >= 18 && person.getAge() < 30,
+				person -> person.printPerson());
+		
+		makeOperationOnSource(() -> Arrays.asList(gabor, cipri, paul, cristi, cipriR, flaviu, sebastian, sebi,
+						gabi, madalin, alex, minor),
+				person -> person.getAge() >= 18 && person.getAge() < 30,
+				Person::getEmailAddress, String::toString);
+		
+		makeOperationOnSource(() -> Arrays.asList(gabor, cipri, paul, cristi, cipriR, flaviu, sebastian, sebi,
+				gabi, madalin, alex, minor),
+		person -> person.getAge() >= 18 && person.getAge() < 30,
+		Person::getEmailAddress, s -> {
+			int age = 25;
+			System.out.println(s + " " + age);
+		});
+					
 
-		CheckPerson checkInRange = person -> person.getAge() >= 18 && person.getAge() < 30;
-		System.out.println(getPersonsWithCondition(persons, person -> person.getAge() >= 18).size());
-		System.out.println(getPersonsWithCondition(persons, checkInRange).size());
-
-		Predicate<Person> predicate = person -> person.getAge() >= 18 && person.getAge() < 30;
-
-		Function<Person, String> mapper = person -> {
-			person.setEmailAddress("personInRange@sda.com");
-			return person.getEmailAddress();
-		};
-		Consumer<String> consumer = email -> System.out.println(email);
+//		Function<Person, String> mapper = person -> {
+//			person.setEmailAddress("personInRange@sda.com");
+//			return person.getEmailAddress();
+//		};
+//		Consumer<String> consumer = email -> System.out.println(email);
+//		
+				
 
 		//ComplexProcesingElements.<Person, String>processElements(persons, predicate, mapper, consumer);
-		ComplexProcesingElements.<Person, String>processElements(persons,
-				(Person p) -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 30,
-				Person::getEmailAddress, email -> System.out.println(email));
+//		ComplexProcesingElements.<Person, String>processElements(persons,
+//				(Person p) -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 30,
+//				Person::getEmailAddress, email -> System.out.println(email));
 
 	}
+	
+	
+	
+	public static void makeOperationOnSource(Supplier<List<Person>> suplier, Predicate<Person> predicate, Consumer<Person> consumer) {
+		 for(Person person: suplier.get()) {
+			 if(predicate.test(person)) {
+				 consumer.accept(person);
+			 }
+		 }
+	}
+	
+	public static void makeOperationOnSource(Supplier<List<Person>> suplier, Predicate<Person> predicate, Function<Person, String> function, Consumer<String> consumer) {
+		 for(Person person: suplier.get()) {
+			 if(predicate.test(person)) {
+				 consumer.accept(function.apply(person));
+			 }
+		 }
+	}
+	
+	
+	
 
 	public static List<Person> getAdults(List<Person> persons) {
 		List<Person> adults = new ArrayList<Person>();

@@ -43,6 +43,22 @@ public class Person {
 	public void setGender(Sex gender) {
 		this.gender = gender;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public LocalDate getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
+	}
 	
 	
 
